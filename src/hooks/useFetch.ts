@@ -6,20 +6,28 @@ export default function useFetch(url: string) {
     const [error, setError] = useState<any>("");
     const [isLoading, setIsLoading] = useState<Boolean>(true);
 
-    const fetchData = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            setError(false);
-            const response: any = await axios({
-                method: 'GET',
-                url: `https://jsonplaceholder.typicode.com/${url}`,
-            })
-            setIsLoading(false);
-            setResponse(response.data);
+    const localStorageResponse = window.localStorage.getItem(url);
 
-        } catch (err) {
-            setError(err);
+    const fetchData = useCallback(async () => {
+        if(localStorageResponse){
+            setResponse(JSON.parse(localStorageResponse));
+        } else {
+            try {
+                setIsLoading(true);
+                setError(false);
+                const response: any = await axios({
+                    method: 'GET',
+                    url: `https://jsonplaceholder.typicode.com/${url}`,
+                })
+                setIsLoading(false);
+                setResponse(response.data);
+                window.localStorage.setItem(url, JSON.stringify(response.data));
+
+            } catch (err) {
+                setError(err);
+            }
         }
+
     }, [url]);
 
     useEffect(() => {
