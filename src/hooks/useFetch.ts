@@ -4,7 +4,7 @@ import axios from 'axios';
 export default function useFetch(url: string) {
     const [response, setResponse] = useState<any[]>([]);
     const [error, setError] = useState<any>("");
-    const [isLoading, setIsLoading] = useState<Boolean>(true);
+    const [isLoading, setIsLoading] = useState<Boolean>(false);
 
     const localStorageResponse = window.localStorage.getItem(url);
 
@@ -28,11 +28,11 @@ export default function useFetch(url: string) {
             }
         }
 
-    }, [url]);
+    }, [url, localStorageResponse]);
 
     useEffect(() => {
         fetchData();
-    }, [url]);
+    }, [url, fetchData]);
 
     return [ response, error, isLoading ];
 }
